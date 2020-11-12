@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD59FAE6A4DF2B5CFBF55B95 /* Pods_Maze.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4B871CAFFCB651DC4A8C40 /* Pods_Maze.framework */; };
+		F3588F3D255D785F00ED951D /* SocketConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3588F3C255D785E00ED951D /* SocketConnector.swift */; };
 		F375A27D2559A61C00D7BAE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F375A27C2559A61C00D7BAE6 /* AppDelegate.swift */; };
 		F375A27F2559A61C00D7BAE6 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F375A27E2559A61C00D7BAE6 /* GameScene.sks */; };
 		F375A2812559A61C00D7BAE6 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = F375A2802559A61C00D7BAE6 /* Actions.sks */; };
@@ -21,6 +23,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0CAD67DB18E6784317FA4134 /* Pods-Maze.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Maze.release.xcconfig"; path = "Target Support Files/Pods-Maze/Pods-Maze.release.xcconfig"; sourceTree = "<group>"; };
+		28261B431B1D98B684C25B4C /* Pods-Maze.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Maze.debug.xcconfig"; path = "Target Support Files/Pods-Maze/Pods-Maze.debug.xcconfig"; sourceTree = "<group>"; };
+		4D4B871CAFFCB651DC4A8C40 /* Pods_Maze.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Maze.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3588F3C255D785E00ED951D /* SocketConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketConnector.swift; sourceTree = "<group>"; };
 		F375A2792559A61C00D7BAE6 /* Maze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F375A27C2559A61C00D7BAE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F375A27E2559A61C00D7BAE6 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -41,17 +47,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD59FAE6A4DF2B5CFBF55B95 /* Pods_Maze.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E9D57278D2C9861B1A979FC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4D4B871CAFFCB651DC4A8C40 /* Pods_Maze.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		51CC23B70CD4E72A31D9F315 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				28261B431B1D98B684C25B4C /* Pods-Maze.debug.xcconfig */,
+				0CAD67DB18E6784317FA4134 /* Pods-Maze.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		F375A2702559A61C00D7BAE6 = {
 			isa = PBXGroup;
 			children = (
 				F375A27B2559A61C00D7BAE6 /* Maze */,
 				F375A27A2559A61C00D7BAE6 /* Products */,
+				51CC23B70CD4E72A31D9F315 /* Pods */,
+				1E9D57278D2C9861B1A979FC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,6 +105,7 @@
 				F375A2B02559B6FF00D7BAE6 /* level1.txt */,
 				F375A2B22559C0C500D7BAE6 /* Constants.swift */,
 				F375A2B4255A6C6D00D7BAE6 /* Spark.sks */,
+				F3588F3C255D785E00ED951D /* SocketConnector.swift */,
 			);
 			path = Maze;
 			sourceTree = "<group>";
@@ -89,9 +117,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F375A2912559A61E00D7BAE6 /* Build configuration list for PBXNativeTarget "Maze" */;
 			buildPhases = (
+				4EAD75102F32A01FE44DE84A /* [CP] Check Pods Manifest.lock */,
 				F375A2752559A61C00D7BAE6 /* Sources */,
 				F375A2762559A61C00D7BAE6 /* Frameworks */,
 				F375A2772559A61C00D7BAE6 /* Resources */,
+				81E1F1B9D5EFB7CE60D01059 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -152,6 +182,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		4EAD75102F32A01FE44DE84A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Maze-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		81E1F1B9D5EFB7CE60D01059 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Maze/Pods-Maze-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Maze/Pods-Maze-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Maze/Pods-Maze-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		F375A2752559A61C00D7BAE6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -161,6 +233,7 @@
 				F375A2852559A61C00D7BAE6 /* GameViewController.swift in Sources */,
 				F375A27D2559A61C00D7BAE6 /* AppDelegate.swift in Sources */,
 				F375A2B32559C0C500D7BAE6 /* Constants.swift in Sources */,
+				F3588F3D255D785F00ED951D /* SocketConnector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +375,7 @@
 		};
 		F375A2922559A61E00D7BAE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 28261B431B1D98B684C25B4C /* Pods-Maze.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -320,6 +394,7 @@
 		};
 		F375A2932559A61E00D7BAE6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0CAD67DB18E6784317FA4134 /* Pods-Maze.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
