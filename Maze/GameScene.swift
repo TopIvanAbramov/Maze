@@ -32,13 +32,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
     
     func generated(map: String) {
         self.currentMap = map
-        
-
-//        print("Map: \(x) \(y)\n\(map)")
-        
         loadScoreLabels()
         loadLevel(fromString: map)
-//        createPlayer(withX: x, andY: y)
     }
     
     
@@ -47,7 +42,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
     private var cellWidth : CGFloat = 0.0
     private var xOffset : CGFloat = 0.0
     private var motionManager: CMMotionManager?
-    private var scoreLabel: SKLabelNode!
+    private var pauseButton: SKNode!
     private var mainButton: SKLabelNode!
     private var nextLevelButton: SKLabelNode!
     private var playerNode: SKSpriteNode!
@@ -56,12 +51,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
     private var scoreNodes: [SKNode] = []
     var mapDelegate: RequestMapDelegate?
     
-    var currentMap: String?
+    private var currentMap: String?
     
     private var score = 0 {
         didSet {
             updateScoreLabel(withScore: score)
-//            scoreLabel?.text = "\(score)"
         }
     }
     
@@ -74,8 +68,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         physicsWorld.contactDelegate = self
         
 //        loadLightNode()
-        setupScoreLabel()
-        createMainButton()
+        setupPauseButton()
+        createReplayButton()
         createNextlevelButton()
         loadBackground(forView: view)
         
@@ -221,12 +215,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         addChild(playerNode)
     }
     
-    func setupScoreLabel() {
-        scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
-        scoreLabel?.position = CGPoint(x: 100, y: frame.maxY - 50)
-        scoreLabel?.zPosition = 2
-        scoreLabel.text = "0"
-        addChild(scoreLabel)
+    func setupPauseButton() {
+        pauseButton = SKSpriteNode(imageNamed: "pause")
+        pauseButton?.position = CGPoint(x: 40, y: frame.maxY - 50)
+        pauseButton?.zPosition = 2
+        pauseButton.name = "pauseButton"
+        addChild(pauseButton)
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -314,8 +308,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         }
     }
     
-    func createMainButton() {
-        self.mainButton = SKLabelNode(fontNamed: "Chalkduster")
+    func createReplayButton() {
+        self.mainButton = SKLabelNode(fontNamed: "Apple SD Gothic Neo Bold")
         self.mainButton.position = CGPoint(x: self.frame.maxX / 2,
                                            y: self.frame.maxY / 2)
         
@@ -323,14 +317,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         self.mainButton.zPosition = 3
         
         self.mainButton.text = "Play again ↻"
-        let background = SKShapeNode(rect: CGRect(x: -mainButton.frame.size.width / 2,
-                                                  y: -10,
-                                                  width: 250,
+        let background = SKShapeNode(rect: CGRect(x: -mainButton.frame.size.width / 2 - 15,
+                                                  y: -12,
+                                                  width: 200,
                                                   height: 50),
                                                   cornerRadius: 10)
         
         
-        background.fillColor = .systemYellow
+        background.fillColor = #colorLiteral(red: 0.9803921569, green: 0.737254902, blue: 0.2392156863, alpha: 1)
         self.mainButton.addChild(background)
 
         background.zPosition = 0
@@ -339,7 +333,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
     }
     
     func createNextlevelButton() {
-        self.nextLevelButton = SKLabelNode(fontNamed: "Chalkduster")
+        self.nextLevelButton = SKLabelNode(fontNamed: "Apple SD Gothic Neo Bold")
         self.nextLevelButton.position = CGPoint(x: self.frame.maxX / 2,
                                            y: self.frame.maxY / 3)
         
@@ -347,9 +341,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         self.nextLevelButton.zPosition = 3
         
         self.nextLevelButton.text = "Next level ❯"
-        let background = SKShapeNode(rect: CGRect(x: -mainButton.frame.size.width / 2,
-                                                  y: -10,
-                                                  width: 250,
+        let background = SKShapeNode(rect: CGRect(x: -mainButton.frame.size.width / 2 - 15,
+                                                  y: -12,
+                                                  width: 200,
                                                   height: 50),
                                                   cornerRadius: 10)
         
@@ -411,11 +405,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
             addRemovedNodes()
             
             loadLevel(fromString: self.currentMap!)
-            
-//            createPlayer(withX: self.currentX, andY: self.currentY)
-//            mapDelegate?.generateNewMap(height: Constants.numberOfCellsHeight, width: Constants.numberOfCellsWidth)
         } else if frontTouchedNode == "playNextLevel" {
-//            addRemovedNodes()
             removedNodes = []
             score = 0
             mainButton.removeFromParent()
@@ -425,6 +415,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
             removeAllGameNode()
             
             mapDelegate?.generateNewMap(height: Constants.numberOfCellsHeight, width: Constants.numberOfCellsWidth)
+        } else if frontTouchedNode == "pauseButton" {
+            let touchedNodes = nodes(at: location)
+            let node = touchedNodes.first { (node) -> Bool in
+                node.name == "pauseButton"
+            }
+            node?.run(.setTexture(SKTexture(imageNamed: "play")))
+            node?.name = "playButton"
+            
+            playerNode.physicsBody?.isDynamic = false
+            
+        } else if frontTouchedNode == "playButton" {
+            let touchedNodes = nodes(at: location)
+            let node = touchedNodes.first { (node) -> Bool in
+                node.name == "playButton"
+            }
+            node?.run(.setTexture(SKTexture(imageNamed: "pause")))
+            node?.name = "pauseButton"
+            
+            playerNode.physicsBody?.isDynamic = true
         }
     }
     
@@ -469,19 +478,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
     
         func loadScoreLabels() {
             let node1 = SKSpriteNode(imageNamed: "star_unselected")
-            node1.position = CGPoint(x: 35, y: frame.maxY / 2 + 50 )
+            node1.position = CGPoint(x: 40, y: frame.maxY / 2 + 50 )
             addChild(node1)
             node1.size = CGSize(width: 35, height: 35)
             scoreNodes.append(node1)
             
             let node2 = SKSpriteNode(imageNamed: "star_unselected")
-            node2.position = CGPoint(x: 35, y: frame.maxY / 2)
+            node2.position = CGPoint(x: 40, y: frame.maxY / 2)
             addChild(node2)
             node2.size = CGSize(width: 35, height: 35)
             scoreNodes.append(node2)
             
             let node3 = SKSpriteNode(imageNamed: "star_unselected")
-            node3.position = CGPoint(x: 35, y: frame.maxY / 2 - 50)
+            node3.position = CGPoint(x: 40, y: frame.maxY / 2 - 50)
             addChild(node3)
             node3.size = CGSize(width: 35, height: 35)
             scoreNodes.append(node3)
