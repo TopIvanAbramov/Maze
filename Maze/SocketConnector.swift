@@ -10,7 +10,7 @@ import Foundation
 import SocketIO
 
 protocol SocketEventDelegate {
-    func generated(map: String, withX x: Int, andY y: Int)
+    func generated(map: String)
     func connected()
 }
 
@@ -75,29 +75,36 @@ class SocketConnector {
             
         socket.on("map") { (data, ack) in
             
-            guard let dict = data.first as? Dictionary<String, String> else {
-                print("Cannot convert data")
-                           
-                return
-            }
+            print("Map: \(data)")
             
-            guard let map = dict["map"] else {
-                return
-            }
-            
-            guard let x = (dict["x"] as NSString?)?.integerValue else {
-                print("Cannot convert: \(String(describing: dict["x"]))")
+            guard let map = data.first as? String else {
+                print("Cannot convert map")
                 
                 return
             }
-
-            guard let y = (dict["y"] as NSString?)?.integerValue else {
-                print("Cannot convert: \(String(describing: dict["x"]))")
-                
-                return
-            }
+//            guard let dict = data.first as? Dictionary<String, String> else {
+//                print("Cannot convert data")
+//
+//                return
+//            }
             
-            self.delegate?.generated(map: map, withX: x, andY: y)
+//            guard let map = dict["map"] else {
+//                return
+//            }
+//
+//            guard let x = (dict["x"] as NSString?)?.integerValue else {
+//                print("Cannot convert: \(String(describing: dict["x"]))")
+//
+//                return
+//            }
+//
+//            guard let y = (dict["y"] as NSString?)?.integerValue else {
+//                print("Cannot convert: \(String(describing: dict["x"]))")
+//
+//                return
+//            }
+            
+            self.delegate?.generated(map: map)
         }
             
         
@@ -121,11 +128,12 @@ class SocketConnector {
         socket.emit("message", message)
     }
     
-    func requestMap(withWidth width: Int, andHeight length: Int) {
+    func requestMap(withWidth width: Int, andHeight length: Int, vortexProb: Float) {
         let dict = [
             "width": width,
-            "length": length
-        ]
+            "length": length,
+            "vortex_prob": vortexProb
+            ] as [String : Any]
         
         print("Request map")
         

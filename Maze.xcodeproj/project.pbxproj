@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,7 +17,6 @@
 		F375A2882559A61C00D7BAE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F375A2862559A61C00D7BAE6 /* Main.storyboard */; };
 		F375A28A2559A61E00D7BAE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F375A2892559A61E00D7BAE6 /* Assets.xcassets */; };
 		F375A28D2559A61E00D7BAE6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F375A28B2559A61E00D7BAE6 /* LaunchScreen.storyboard */; };
-		F375A2B12559B6FF00D7BAE6 /* level1.txt in Resources */ = {isa = PBXBuildFile; fileRef = F375A2B02559B6FF00D7BAE6 /* level1.txt */; };
 		F375A2B32559C0C500D7BAE6 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F375A2B22559C0C500D7BAE6 /* Constants.swift */; };
 		F375A2B5255A6C6D00D7BAE6 /* Spark.sks in Resources */ = {isa = PBXBuildFile; fileRef = F375A2B4255A6C6D00D7BAE6 /* Spark.sks */; };
 /* End PBXBuildFile section */
@@ -37,7 +36,6 @@
 		F375A2892559A61E00D7BAE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F375A28C2559A61E00D7BAE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F375A28E2559A61E00D7BAE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F375A2B02559B6FF00D7BAE6 /* level1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = level1.txt; sourceTree = "<group>"; };
 		F375A2B22559C0C500D7BAE6 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F375A2B4255A6C6D00D7BAE6 /* Spark.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Spark.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,7 +66,6 @@
 				28261B431B1D98B684C25B4C /* Pods-Maze.debug.xcconfig */,
 				0CAD67DB18E6784317FA4134 /* Pods-Maze.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -102,7 +99,6 @@
 				F375A2892559A61E00D7BAE6 /* Assets.xcassets */,
 				F375A28B2559A61E00D7BAE6 /* LaunchScreen.storyboard */,
 				F375A28E2559A61E00D7BAE6 /* Info.plist */,
-				F375A2B02559B6FF00D7BAE6 /* level1.txt */,
 				F375A2B22559C0C500D7BAE6 /* Constants.swift */,
 				F375A2B4255A6C6D00D7BAE6 /* Spark.sks */,
 				F3588F3C255D785E00ED951D /* SocketConnector.swift */,
@@ -174,7 +170,6 @@
 				F375A27F2559A61C00D7BAE6 /* GameScene.sks in Resources */,
 				F375A28A2559A61E00D7BAE6 /* Assets.xcassets in Resources */,
 				F375A2B5255A6C6D00D7BAE6 /* Spark.sks in Resources */,
-				F375A2B12559B6FF00D7BAE6 /* level1.txt in Resources */,
 				F375A28D2559A61E00D7BAE6 /* LaunchScreen.storyboard in Resources */,
 				F375A2812559A61C00D7BAE6 /* Actions.sks in Resources */,
 			);

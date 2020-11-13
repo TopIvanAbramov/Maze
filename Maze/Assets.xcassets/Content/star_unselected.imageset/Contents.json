@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "block_2-1.png",
+      "filename" : "star_unselected.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "block_2.png",
+      "filename" : "star_unselected-1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

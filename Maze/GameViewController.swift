@@ -11,32 +11,36 @@ import SpriteKit
 import GameplayKit
 
 protocol LoadMapDelegate {
-    func generated(map: String, withX x: Int, andY y: Int)
+    func generated(map: String)
 }
 
 class GameViewController: UIViewController, SocketEventDelegate, RequestMapDelegate {
     
     func connected() {
-         self.socketConnector.requestMap(withWidth: Constants.numberOfCellsHeight, andHeight: Constants.numberOfCellsWidth)
+        self.socketConnector.requestMap(withWidth: Constants.numberOfCellsHeight, andHeight: Constants.numberOfCellsWidth, vortexProb: 0.2)
     }
     
     
     var loadLevelDelegate: LoadMapDelegate?
     
+    func setComplexityLevel() {
+        UserDefaults.standard.set("h", forKey: "complexity")
+    }
+    
     func generateNewMap(height: Int, width: Int) {
         
         if socketConnector.socket.status == .connected {
-            self.socketConnector.requestMap(withWidth: height, andHeight: width)
+            self.socketConnector.requestMap(withWidth: height, andHeight: width, vortexProb: 0.2)
         } else {
 
         }
     }
     
     
-    func generated(map: String, withX x: Int, andY y: Int) {
+    func generated(map: String) {
 //        print("Map \(map) X: \(x) Y: \(y)")
         
-        loadLevelDelegate?.generated(map: map, withX: x, andY: y)
+        loadLevelDelegate?.generated(map: map)
     }
     
 

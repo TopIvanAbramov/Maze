@@ -30,16 +30,20 @@ enum GameState {
 
 class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
     
-    func generated(map: String, withX x: Int, andY y: Int) {
+    func generated(map: String) {
         self.currentMap = map
-        self.currentX = x
-        self.currentY = y
         
-        loadLevel(fromString: map, withX: x, andY: x)
-        createPlayer(withX: x, andY: y)
+
+//        print("Map: \(x) \(y)\n\(map)")
+        
+        loadScoreLabels()
+        loadLevel(fromString: map)
+//        createPlayer(withX: x, andY: y)
     }
     
     
+    private var lightNode: SKLightNode = SKLightNode()
+    private var playerPosition: CGPoint?
     private var cellWidth : CGFloat = 0.0
     private var xOffset : CGFloat = 0.0
     private var motionManager: CMMotionManager?
@@ -49,15 +53,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
     private var playerNode: SKSpriteNode!
     private var gameState: GameState = .play
     private var removedNodes: [SKNode] = []
+    private var scoreNodes: [SKNode] = []
     var mapDelegate: RequestMapDelegate?
     
     var currentMap: String?
-    var currentX = 1
-    var currentY = 1
     
     private var score = 0 {
         didSet {
-            scoreLabel?.text = "Score: \(score)"
+            updateScoreLabel(withScore: score)
+//            scoreLabel?.text = "\(score)"
         }
     }
     
@@ -69,23 +73,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
     
         physicsWorld.contactDelegate = self
         
+//        loadLightNode()
         setupScoreLabel()
         createMainButton()
         createNextlevelButton()
         loadBackground(forView: view)
         
-        physicsWorld.gravity = .zero
+//        physicsWorld.gravity = .zero
         motionManager = CMMotionManager()
         motionManager?.startAccelerometerUpdates()
     }
     
     
-    func loadLevel(fromString map: String, withX x: Int, andY y: Int) {
+    func loadLevel(fromString map: String) {
         let lines = map.split(separator: "\n")
         
         for (row, line) in lines.reversed().enumerated() {
             for (column, letter) in line.enumerated() {
-                let position = CGPoint(x: (cellWidth * CGFloat(column)) + xOffset + 82,
+                let position = CGPoint(x: (cellWidth * CGFloat(column)) + xOffset + 32,
                                        y: (cellWidth * CGFloat(row)) + 23)
                 
                 switch letter {
@@ -97,6 +102,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
                     loadStar(withPosition: position)
                 case "f":
                     loadFinishPoint(withPosition: position)
+                case "i":
+                    loadPlayer(withPosition: position)
                 case " ":
                     break
                 default:
@@ -106,17 +113,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         }
     }
     
-    func loadWall(withPosition position: CGPoint) {
-        let node = SKSpriteNode(imageNamed: "block")
-        node.position = position
-        node.name = "block"
-        
-        node.size = CGSize(width: cellWidth, height: cellWidth)
-        node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
-        node.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
-        node.physicsBody?.isDynamic = false
-        addChild(node)
-    }
+//    func loadWall(withPosition position: CGPoint) {
+//        let node = SKSpriteNode(imageNamed: "block")
+//        node.position = position
+//        node.name = "block"
+//
+//        node.size = CGSize(width: cellWidth, height: cellWidth)
+//        node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
+//        node.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
+//        node.physicsBody?.isDynamic = false
+//
+//        node.lightingBitMask = 0b0001
+//        node.shadowCastBitMask = 0b0001
+//
+////        node.blendMode = .alpha
+////        node.colorBlendFactor = 1
+////        node.color = .black
+////        node.alpha = 0.25
+//
+//        addChild(node)
+//    }
     
     func loadStar(withPosition position: CGPoint) {
         let node = SKSpriteNode(imageNamed: "star")
@@ -164,12 +180,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         node.physicsBody?.collisionBitMask = 0
         node.physicsBody?.isDynamic = false
         addChild(node)
+        
+        
+//        let lightNode2 = SKLightNode()
+//        lightNode2.position = position
+//        lightNode2.categoryBitMask = 0b0011
+//        lightNode2.lightColor = .white
+//
+//        lightNode2.ambientColor = .white
+//
+//        lightNode2.zPosition = 4
+//        self.addChild(lightNode2)
+        
+//        lightNode.ambientColor = .white
+        
+//        lightNode.zPosition = 4
+//        self.addChild(lightNode)
     }
     
-    func createPlayer(withX x: Int, andY y: Int) {
+    func loadPlayer(withPosition position: CGPoint) {
+        self.playerPosition = position
         playerNode = SKSpriteNode(imageNamed: "player")
-        playerNode.position = CGPoint(x: (cellWidth * CGFloat(x)) + xOffset + 82,
-                                      y: (cellWidth * CGFloat(Constants.numberOfCellsHeight - y - 2)) + 32)
+        playerNode.position = position
         
         playerNode.name = "player"
         playerNode.zPosition = 1
@@ -184,6 +216,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
                                                CollisionTypes.star.rawValue |
                                                CollisionTypes.vortex.rawValue
         playerNode.physicsBody?.isDynamic = true
+        
+        loadLightNode()
         addChild(playerNode)
     }
     
@@ -191,7 +225,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
         scoreLabel?.position = CGPoint(x: 100, y: frame.maxY - 50)
         scoreLabel?.zPosition = 2
-        scoreLabel.text = "Score: 0"
+        scoreLabel.text = "0"
         addChild(scoreLabel)
     }
     
@@ -199,6 +233,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         guard let accelerometerData = motionManager?.accelerometerData else { return }
         physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * 50,
                                         dy: accelerometerData.acceleration.x * -50)
+        
+        guard let playerNode = playerNode else {
+            return
+        }
+        
+        
+        lightNode.position = playerNode.position
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -238,7 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
                 }
                 self.score -= 1
                 
-                self.createPlayer(withX: self.currentX, andY: self.currentY)
+                self.loadPlayer(withPosition: self.playerPosition!)
             }
         case "finish":
             gameState = .nextLevel
@@ -328,8 +369,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
         background.zPosition = -1
         background.size = CGSize (width: frame.maxX, height: frame.maxY)
         
+//        background.lightingBitMask = 0b0001
+        
         addChild(background)
     }
+    
     
     func addRemovedNodes() {
         removedNodes.forEach { node in
@@ -366,8 +410,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
             
             addRemovedNodes()
             
-            loadLevel(fromString: self.currentMap!, withX: 0, andY: 0)
-            createPlayer(withX: self.currentX, andY: self.currentY)
+            loadLevel(fromString: self.currentMap!)
+            
+//            createPlayer(withX: self.currentX, andY: self.currentY)
 //            mapDelegate?.generateNewMap(height: Constants.numberOfCellsHeight, width: Constants.numberOfCellsWidth)
         } else if frontTouchedNode == "playNextLevel" {
 //            addRemovedNodes()
@@ -380,6 +425,76 @@ class GameScene: SKScene, SKPhysicsContactDelegate, LoadMapDelegate {
             removeAllGameNode()
             
             mapDelegate?.generateNewMap(height: Constants.numberOfCellsHeight, width: Constants.numberOfCellsWidth)
+        }
+    }
+    
+    func loadWall(withPosition position: CGPoint) {
+        let node = SKSpriteNode(imageNamed: "block")
+        node.position = position
+        node.name = "block"
+        
+        node.size = CGSize(width: cellWidth, height: cellWidth)
+        node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
+        node.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
+        node.physicsBody?.isDynamic = false
+        
+        node.lightingBitMask = 0b0001
+        node.shadowCastBitMask = 0b0001
+        
+//        node.blendMode = .alpha
+//        node.colorBlendFactor = 1
+//        node.color = .black
+//        node.alpha = 0.25
+        
+        addChild(node)
+    }
+    
+    func loadLightNode() {
+//        lightNode = SKLightNode()
+//        lightNode.position = position
+//        lightNode.categoryBitMask = 0b0001
+//        lightNode.lightColor = .white
+        
+//        let lightNode2 = SKLightNode()
+//        lightNode2.position = CGPoint(x: frame.maxX / 2, y: frame.maxY / 2)
+//        lightNode2.categoryBitMask = 0b0011
+//        lightNode2.lightColor = .white
+//
+//        lightNode2.ambientColor = .white
+//
+//        lightNode2.zPosition = 4
+//        self.addChild(lightNode2)
+        
+    }
+    
+        func loadScoreLabels() {
+            let node1 = SKSpriteNode(imageNamed: "star_unselected")
+            node1.position = CGPoint(x: 35, y: frame.maxY / 2 + 50 )
+            addChild(node1)
+            node1.size = CGSize(width: 35, height: 35)
+            scoreNodes.append(node1)
+            
+            let node2 = SKSpriteNode(imageNamed: "star_unselected")
+            node2.position = CGPoint(x: 35, y: frame.maxY / 2)
+            addChild(node2)
+            node2.size = CGSize(width: 35, height: 35)
+            scoreNodes.append(node2)
+            
+            let node3 = SKSpriteNode(imageNamed: "star_unselected")
+            node3.position = CGPoint(x: 35, y: frame.maxY / 2 - 50)
+            addChild(node3)
+            node3.size = CGSize(width: 35, height: 35)
+            scoreNodes.append(node3)
+        }
+    
+    func updateScoreLabel(withScore score: Int) {
+        for i in 0...2 {
+            print(i)
+            if i < score {
+                scoreNodes[i].run(.setTexture(SKTexture(imageNamed: "star")))
+            } else {
+                scoreNodes[i].run(.setTexture(SKTexture(imageNamed: "star_unselected")))
+            }
         }
     }
 }
