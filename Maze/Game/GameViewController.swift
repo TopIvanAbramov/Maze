@@ -18,6 +18,7 @@ class GameViewController: UIViewController {
     
     
     var loadLevelDelegate: LoadMapDelegate?
+    private var userDefaults = UserDefaults.standard
     
     func setComplexityLevel() {
         UserDefaults.standard.set("h", forKey: "complexity")
@@ -26,7 +27,10 @@ class GameViewController: UIViewController {
     func generateNewMap(height: Int, width: Int) {
         
         if socketConnector.socket.status == .connected {
-            self.socketConnector.requestMap(withWidth: height, andHeight: width, vortexProb: 0.2)
+            let complexityLevel: String = userDefaults.string(forKey: Constants.complexityLevel) ?? "medium"
+            let vortexProb: Double = Constants.complexity[complexityLevel] ?? 0
+            
+            self.socketConnector.requestMap(withWidth: height, andHeight: width, vortexProb: vortexProb)
         } else {
 
         }

@@ -190,7 +190,7 @@ class GameScene: SKScene, LoadMapDelegate {
     func loadPlayer(withPosition position: CGPoint) {
         self.playerPosition = position
         
-        let ballColor: String = userDefaults.string(forKey: "ballColor") ?? "playerBlue"
+        let ballColor: String = userDefaults.string(forKey: Constants.ballColor) ?? "playerBlue"
             
         
         playerNode = SKSpriteNode(imageNamed: ballColor)

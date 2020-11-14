@@ -11,9 +11,11 @@ import Foundation
 struct Constants {
     static let numberOfCellsWidth = 14
     static let numberOfCellsHeight = 8
-    
+    static let complexityLevel = "complexityLevel"
+    static let ballColor = "ballColor"
+    static let complexity = [
+        "easy": 0,
+        "medium": 0.1,
+        "hard": 0.4
+    ]
 }
-//
-//enum Complexity {
-//    case Hard(vortexProb:)
-//}

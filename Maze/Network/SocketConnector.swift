@@ -64,45 +64,22 @@ class SocketConnector {
             
             print("\n\nGot message: \(data) \(ack)")
             
-            guard let dict = data.first as? Dictionary<String, String> else {
-                print("Cannot convert data")
-                           
-                return
-            }
-            
-            print("\n\nMessage contain: \(dict) \(String(describing: dict["Hello dudes"]))")
+//            guard let message = data.first as? String else {
+//                print("Cannot convert data")
+//
+//                return
+//            }
+//
+//            print("\n\nMessage contain: \(message)")
         }
             
         socket.on("map") { (data, ack) in
-            
-            print("Map: \(data)")
             
             guard let map = data.first as? String else {
                 print("Cannot convert map")
                 
                 return
             }
-//            guard let dict = data.first as? Dictionary<String, String> else {
-//                print("Cannot convert data")
-//
-//                return
-//            }
-            
-//            guard let map = dict["map"] else {
-//                return
-//            }
-//
-//            guard let x = (dict["x"] as NSString?)?.integerValue else {
-//                print("Cannot convert: \(String(describing: dict["x"]))")
-//
-//                return
-//            }
-//
-//            guard let y = (dict["y"] as NSString?)?.integerValue else {
-//                print("Cannot convert: \(String(describing: dict["x"]))")
-//
-//                return
-//            }
             
             self.delegate?.generated(map: map)
         }
@@ -128,7 +105,7 @@ class SocketConnector {
         socket.emit("message", message)
     }
     
-    func requestMap(withWidth width: Int, andHeight length: Int, vortexProb: Float) {
+    func requestMap(withWidth width: Int, andHeight length: Int, vortexProb: Double) {
         let dict = [
             "width": width,
             "length": length,

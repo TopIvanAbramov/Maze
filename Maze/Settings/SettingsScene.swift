@@ -17,8 +17,10 @@ protocol SettingsSceneDelegate {
 class SettingsScene: SKScene {
     
     private var selectedColor: SKSpriteNode?
+    private var selectedLevel: SKSpriteNode?
     private var exitButton: SKSpriteNode?
     private var ballColors: [SKSpriteNode] = []
+    private var complexityLevels: [SKSpriteNode] = []
     var settingsDelegate: SettingsSceneDelegate?
     private var userDefaults = UserDefaults.standard
     
@@ -27,6 +29,8 @@ class SettingsScene: SKScene {
         createBackButton()
         loadBallColorsLabels()
         createSelectedColorButton()
+        loadComplexityLevelLabels()
+        createSelectedLevelButton()
     }
     
     func loadBackground(forView view: SKView) {
@@ -41,14 +45,7 @@ class SettingsScene: SKScene {
     
     func createSelectedColorButton() {
         
-        var ballColor: String = "playerBlue"
-        
-        do {
-            try! ballColor = userDefaults.string(forKey: "ballColor")!
-        } catch {
-            userDefaults.set("playerBlue", forKey: "ballColor")
-            ballColor = "playerBlue"
-        }
+        let ballColor: String = userDefaults.string(forKey: Constants.ballColor) ?? "playerBlue"
         
         ballColors.forEach { (node) in
             if node.name == ballColor {
@@ -105,6 +102,59 @@ class SettingsScene: SKScene {
             }
         }
     }
+    
+    func loadComplexityLevelLabels() {
+        let node1 = SKSpriteNode(imageNamed: "easy")
+        node1.position = CGPoint(x: frame.maxX / 2 - 90, y: frame.maxY / 3 )
+        addChild(node1)
+        node1.size = CGSize(width: 60, height: 60)
+        node1.name = "easy"
+        complexityLevels.append(node1)
+        
+        let node2 = SKSpriteNode(imageNamed: "medium")
+        node2.position = CGPoint(x: frame.maxX / 2, y: frame.maxY / 3)
+        addChild(node2)
+        node2.size = CGSize(width: 60, height: 60)
+        node2.name = "medium"
+        complexityLevels.append(node2)
+        
+        let node3 = SKSpriteNode(imageNamed: "hard")
+        node3.position = CGPoint(x: frame.maxX / 2 + 90, y: frame.maxY / 3)
+        addChild(node3)
+        node3.size = CGSize(width: 60, height: 60)
+        node3.name = "hard"
+        complexityLevels.append(node3)
+    }
+    
+    func selectNew(complexityLevel: String) {
+        userDefaults.set(complexityLevel, forKey: Constants.complexityLevel)
+        
+        complexityLevels.forEach { (node) in
+            if node.name == complexityLevel {
+                selectedLevel?.position = node.position
+                return
+            }
+        }
+    }
+    
+    func createSelectedLevelButton() {
+        
+        let complexityLevel: String = userDefaults.string(forKey: Constants.complexityLevel) ?? "medium"
+
+        complexityLevels.forEach { (node) in
+            if node.name == complexityLevel {
+                print("Select level")
+                selectedLevel = SKSpriteNode(imageNamed: "circle")
+                selectedLevel?.size = CGSize(width: 85, height: 85)
+                selectedLevel?.position = node.position
+                selectedLevel?.zPosition = 3
+                selectedLevel?.name = "selectedColor"
+                addChild(selectedLevel!)
+                
+                return
+            }
+        }
+    }
 }
 
 extension SettingsScene: SKPhysicsContactDelegate {
@@ -126,6 +176,12 @@ extension SettingsScene: SKPhysicsContactDelegate {
             selectNew(color: "playerBlue")
         } else if frontTouchedNode == "playerPink" {
             selectNew(color: "playerPink")
+        } else if frontTouchedNode == "easy" {
+            selectNew(complexityLevel: "easy")
+        } else if frontTouchedNode == "medium" {
+            selectNew(complexityLevel: "medium")
+        } else if frontTouchedNode == "hard" {
+            selectNew(complexityLevel: "hard")
         }
     }
 }
