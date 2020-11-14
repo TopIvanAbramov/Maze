@@ -135,8 +135,8 @@
 		F375A27B2559A61C00D7BAE6 /* Maze */ = {
 			isa = PBXGroup;
 			children = (
-				F3588F45255FE39D00ED951D /* Settings */,
 				F3588F40255F0E3A00ED951D /* Network */,
+				F3588F45255FE39D00ED951D /* Settings */,
 				F3588F3F255F0DC700ED951D /* Main */,
 				F3588F3E255F0DB800ED951D /* Game */,
 				F375A27C2559A61C00D7BAE6 /* AppDelegate.swift */,

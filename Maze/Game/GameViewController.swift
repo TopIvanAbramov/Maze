@@ -14,28 +14,7 @@ protocol LoadMapDelegate {
     func generated(map: String)
 }
 
-class GameViewController: UIViewController, SocketEventDelegate, GameDelegate, MainMenuDelegate {
-    
-    func downloadSettingsScene() {
-        loadSettingsScene()
-    }
-    
-    
-    func downloadMainMenu() {
-        loadMainMenu()
-        
-        print("Main menu")
-    }
-    
-    
-    func donwloadGameScene() {
-        loadGameScene()
-    }
-    
-    
-    func connected() {
-        self.socketConnector.requestMap(withWidth: Constants.numberOfCellsHeight, andHeight: Constants.numberOfCellsWidth, vortexProb: 0.2)
-    }
+class GameViewController: UIViewController {
     
     
     var loadLevelDelegate: LoadMapDelegate?
@@ -126,8 +105,8 @@ class GameViewController: UIViewController, SocketEventDelegate, GameDelegate, M
                         // Set the scale mode to scale to fit the window
                         scene.scaleMode = .aspectFill
                         
-//                        self.loadLevelDelegate = scene
-//                        scene.mapDelegate = self
+                        scene.settingsDelegate = self
+                        
                         // Present the scene
 
                         scene.size = view.bounds.size
@@ -176,5 +155,31 @@ class GameViewController: UIViewController, SocketEventDelegate, GameDelegate, M
 
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+}
+
+extension GameViewController: SettingsSceneDelegate, GameDelegate, MainMenuDelegate {
+    
+    func downloadSettingsScene() {
+        loadSettingsScene()
+    }
+    
+    
+    func downloadMainMenu() {
+        loadMainMenu()
+        
+        print("Main menu")
+    }
+    
+    
+    func donwloadGameScene() {
+        loadGameScene()
+    }
+}
+
+extension GameViewController: SocketEventDelegate {
+    
+    func connected() {
+        self.socketConnector.requestMap(withWidth: Constants.numberOfCellsHeight, andHeight: Constants.numberOfCellsWidth, vortexProb: 0.2)
     }
 }
