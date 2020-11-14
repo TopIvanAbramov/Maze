@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		AD59FAE6A4DF2B5CFBF55B95 /* Pods_Maze.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D4B871CAFFCB651DC4A8C40 /* Pods_Maze.framework */; };
 		F3588F3D255D785F00ED951D /* SocketConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3588F3C255D785E00ED951D /* SocketConnector.swift */; };
+		F3588F42255F0F7900ED951D /* MainMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = F3588F41255F0F7900ED951D /* MainMenu.sks */; };
+		F3588F44255F0FC600ED951D /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3588F43255F0FC600ED951D /* MainMenu.swift */; };
+		F3588F47255FE3AD00ED951D /* SettingsScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3588F46255FE3AD00ED951D /* SettingsScene.swift */; };
+		F3588F49255FE3C800ED951D /* SettingsScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F3588F48255FE3C800ED951D /* SettingsScene.sks */; };
 		F375A27D2559A61C00D7BAE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F375A27C2559A61C00D7BAE6 /* AppDelegate.swift */; };
 		F375A27F2559A61C00D7BAE6 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = F375A27E2559A61C00D7BAE6 /* GameScene.sks */; };
 		F375A2812559A61C00D7BAE6 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = F375A2802559A61C00D7BAE6 /* Actions.sks */; };
@@ -26,6 +30,10 @@
 		28261B431B1D98B684C25B4C /* Pods-Maze.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Maze.debug.xcconfig"; path = "Target Support Files/Pods-Maze/Pods-Maze.debug.xcconfig"; sourceTree = "<group>"; };
 		4D4B871CAFFCB651DC4A8C40 /* Pods_Maze.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Maze.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3588F3C255D785E00ED951D /* SocketConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketConnector.swift; sourceTree = "<group>"; };
+		F3588F41255F0F7900ED951D /* MainMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenu.sks; sourceTree = "<group>"; };
+		F3588F43255F0FC600ED951D /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
+		F3588F46255FE3AD00ED951D /* SettingsScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScene.swift; sourceTree = "<group>"; };
+		F3588F48255FE3C800ED951D /* SettingsScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SettingsScene.sks; sourceTree = "<group>"; };
 		F375A2792559A61C00D7BAE6 /* Maze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F375A27C2559A61C00D7BAE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F375A27E2559A61C00D7BAE6 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -69,6 +77,43 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		F3588F3E255F0DB800ED951D /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				F375A2B4255A6C6D00D7BAE6 /* Spark.sks */,
+				F375A27E2559A61C00D7BAE6 /* GameScene.sks */,
+				F375A2822559A61C00D7BAE6 /* GameScene.swift */,
+				F375A2842559A61C00D7BAE6 /* GameViewController.swift */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		F3588F3F255F0DC700ED951D /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				F3588F41255F0F7900ED951D /* MainMenu.sks */,
+				F3588F43255F0FC600ED951D /* MainMenu.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		F3588F40255F0E3A00ED951D /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				F3588F3C255D785E00ED951D /* SocketConnector.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		F3588F45255FE39D00ED951D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F3588F46255FE3AD00ED951D /* SettingsScene.swift */,
+				F3588F48255FE3C800ED951D /* SettingsScene.sks */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		F375A2702559A61C00D7BAE6 = {
 			isa = PBXGroup;
 			children = (
@@ -90,18 +135,17 @@
 		F375A27B2559A61C00D7BAE6 /* Maze */ = {
 			isa = PBXGroup;
 			children = (
+				F3588F45255FE39D00ED951D /* Settings */,
+				F3588F40255F0E3A00ED951D /* Network */,
+				F3588F3F255F0DC700ED951D /* Main */,
+				F3588F3E255F0DB800ED951D /* Game */,
 				F375A27C2559A61C00D7BAE6 /* AppDelegate.swift */,
-				F375A27E2559A61C00D7BAE6 /* GameScene.sks */,
 				F375A2802559A61C00D7BAE6 /* Actions.sks */,
-				F375A2822559A61C00D7BAE6 /* GameScene.swift */,
-				F375A2842559A61C00D7BAE6 /* GameViewController.swift */,
 				F375A2862559A61C00D7BAE6 /* Main.storyboard */,
 				F375A2892559A61E00D7BAE6 /* Assets.xcassets */,
 				F375A28B2559A61E00D7BAE6 /* LaunchScreen.storyboard */,
 				F375A28E2559A61E00D7BAE6 /* Info.plist */,
 				F375A2B22559C0C500D7BAE6 /* Constants.swift */,
-				F375A2B4255A6C6D00D7BAE6 /* Spark.sks */,
-				F3588F3C255D785E00ED951D /* SocketConnector.swift */,
 			);
 			path = Maze;
 			sourceTree = "<group>";
@@ -171,7 +215,9 @@
 				F375A28A2559A61E00D7BAE6 /* Assets.xcassets in Resources */,
 				F375A2B5255A6C6D00D7BAE6 /* Spark.sks in Resources */,
 				F375A28D2559A61E00D7BAE6 /* LaunchScreen.storyboard in Resources */,
+				F3588F42255F0F7900ED951D /* MainMenu.sks in Resources */,
 				F375A2812559A61C00D7BAE6 /* Actions.sks in Resources */,
+				F3588F49255FE3C800ED951D /* SettingsScene.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +271,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F375A2832559A61C00D7BAE6 /* GameScene.swift in Sources */,
+				F3588F47255FE3AD00ED951D /* SettingsScene.swift in Sources */,
+				F3588F44255F0FC600ED951D /* MainMenu.swift in Sources */,
 				F375A2852559A61C00D7BAE6 /* GameViewController.swift in Sources */,
 				F375A27D2559A61C00D7BAE6 /* AppDelegate.swift in Sources */,
 				F375A2B32559C0C500D7BAE6 /* Constants.swift in Sources */,
