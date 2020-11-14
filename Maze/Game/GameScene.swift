@@ -34,8 +34,8 @@ class GameScene: SKScene, LoadMapDelegate {
     
     func generated(map: String) {
         self.currentMap = map
-        loadScoreLabels()
         loadLevel(fromString: map)
+        score = 0
     }
     
     
@@ -53,7 +53,7 @@ class GameScene: SKScene, LoadMapDelegate {
     private var playerNode: SKSpriteNode!
     private var gameState: GameState = .play {
         didSet {
-            stateChanged(to: gameState)
+            stateChanged(from: oldValue, to: gameState)
         }
     }
     private var removedNodes: [SKNode] = []
@@ -78,7 +78,7 @@ class GameScene: SKScene, LoadMapDelegate {
     
         physicsWorld.contactDelegate = self
         
-//        loadLightNode()
+        loadScoreLabels()
         createMainMenuButton()
         setupPauseButton()
         createReplayButton()
@@ -327,8 +327,7 @@ class GameScene: SKScene, LoadMapDelegate {
             score += 1
         case "vortex":
             
-            guard gameState == .play else { return }
-            gameState = .pause
+//            guard gameState == .play else { return }
                 
             let move = SKAction.move(to: node.position, duration: 0.25)
             let scale = SKAction.scale(by : 0.001, duration: 0.25)
@@ -338,22 +337,16 @@ class GameScene: SKScene, LoadMapDelegate {
             
             playerNode.run(sequnce) {
                 guard self.score - 1 >= 0 else {
-//                    self.gameState = .pause
-                    self.playerNode.physicsBody?.isDynamic = false
-                    
-                    self.addChild(self.playAgainButton)
-                    self.addChild(self.nextLevelButton)
-                    self.addChild(self.mainMenuButton)
+                    self.gameState = .pause
                     
                     return
                 }
                 self.score -= 1
                 
-                self.gameState = .play
                 self.loadPlayer(withPosition: self.playerPosition!)
             }
         case "finish":
-            gameState = .nextLevel
+//            gameState = .nextLevel
             
             let move = SKAction.move(to: node.position, duration: 0.25)
             let scale = SKAction.scale(by : 0.001, duration: 0.25)
@@ -375,9 +368,10 @@ class GameScene: SKScene, LoadMapDelegate {
                 
                 let secondSequnce = SKAction.sequence([scale, remove])
                 
+                self.physicsBody?.isDynamic = false
+                
                 sparkNode.run(secondSequnce) {
-                    self.addChild(self.playAgainButton)
-                    self.addChild(self.nextLevelButton)
+                    self.gameState = .pause
                 }
             }
         default:
@@ -475,7 +469,6 @@ class GameScene: SKScene, LoadMapDelegate {
     
     func updateScoreLabel(withScore score: Int) {
         for i in 0...2 {
-            print(i)
             if i < score {
                 scoreNodes[i].run(.setTexture(SKTexture(imageNamed: "star")))
             } else {
@@ -484,8 +477,45 @@ class GameScene: SKScene, LoadMapDelegate {
         }
     }
     
-    func stateChanged(to state: GameState) {
-        print("State: \(state)")
+    func stateChanged(from oldState: GameState, to newState: GameState) {
+        print("Old: \(oldState) New: \(newState)")
+        
+        if oldState == .play && newState == .pause {
+            backgroundNode?.zPosition = 2
+            addChild(playAgainButton)
+            addChild(nextLevelButton)
+            addChild(mainMenuButton)
+            
+            pauseButton?.run(.setTexture(SKTexture(imageNamed: "play")))
+            pauseButton?.name = "playButton"
+            
+            playerNode.physicsBody?.isDynamic = false
+            
+        } else if oldState == .pause && newState == .play {
+            
+            backgroundNode?.zPosition = -1
+            playAgainButton.removeFromParent()
+            nextLevelButton.removeFromParent()
+            mainMenuButton.removeFromParent()
+            
+            pauseButton?.run(.setTexture(SKTexture(imageNamed: "pause")))
+            pauseButton?.name = "pauseButton"
+            
+            playerNode.physicsBody?.isDynamic = true
+        } else if oldState == .play && newState == .nextLevel {
+            
+            backgroundNode?.zPosition = 2
+            addChild(playAgainButton)
+            addChild(nextLevelButton)
+            addChild(mainMenuButton)
+            
+            pauseButton?.run(.setTexture(SKTexture(imageNamed: "play")))
+            pauseButton?.name = "playButton"
+            
+            playerNode.physicsBody?.isDynamic = false
+            
+            gameState = .play
+        }
     }
 }
 
@@ -549,39 +579,12 @@ extension GameScene:  SKPhysicsContactDelegate {
                 mapDelegate?.generateNewMap(height: Constants.numberOfCellsHeight, width: Constants.numberOfCellsWidth)
             } else if frontTouchedNode == "pauseButton" {
                 
-                guard  gameState == .play else { return }
                 gameState = .pause
-                
-                backgroundNode?.zPosition = 2
-                addChild(playAgainButton)
-                addChild(nextLevelButton)
-                addChild(mainMenuButton)
-                
-                let touchedNodes = nodes(at: location)
-                let node = touchedNodes.first { (node) -> Bool in
-                    node.name == "pauseButton"
-                }
-                node?.run(.setTexture(SKTexture(imageNamed: "play")))
-                node?.name = "playButton"
-                
-                playerNode.physicsBody?.isDynamic = false
                 
             } else if frontTouchedNode == "playButton" {
                 
                 gameState = .play
                 
-                backgroundNode?.zPosition = -1
-                playAgainButton.removeFromParent()
-                nextLevelButton.removeFromParent()
-                
-                let touchedNodes = nodes(at: location)
-                let node = touchedNodes.first { (node) -> Bool in
-                    node.name == "playButton"
-                }
-                node?.run(.setTexture(SKTexture(imageNamed: "pause")))
-                node?.name = "pauseButton"
-                
-                playerNode.physicsBody?.isDynamic = true
             } else if frontTouchedNode == "mainMenu" {
                 mapDelegate?.downloadMainMenu()
             }
