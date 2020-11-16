@@ -109,7 +109,8 @@ class SocketConnector {
         let dict = [
             "width": width,
             "length": length,
-            "vortex_prob": vortexProb
+            "vortex_prob": vortexProb,
+            "portal": true
             ] as [String : Any]
         
         print("Request map")

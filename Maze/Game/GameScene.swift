@@ -17,10 +17,11 @@ protocol GameDelegate {
 
 enum CollisionTypes: UInt32 {
     case player = 1
-    case wall = 2
-    case star = 4
+    case wall   = 2
+    case star   = 4
     case vortex = 8
     case finish = 16
+    case portal = 32
 }
 
 enum GameState {
@@ -34,8 +35,9 @@ class GameScene: SKScene, LoadMapDelegate {
     
     func generated(map: String) {
         self.currentMap = map
-        loadLevel(fromString: map)
         score = 0
+        portals = Portals(firstPortal: nil, secondPortal: nil, firstMoveBy: nil, secondMoveBy: nil)
+        loadLevel(fromString: map)
     }
     
     
@@ -56,8 +58,18 @@ class GameScene: SKScene, LoadMapDelegate {
             stateChanged(from: oldValue, to: gameState)
         }
     }
+    
     private var removedNodes: [SKNode] = []
     private var scoreNodes: [SKNode] = []
+    private var portals: Portals?
+    private struct Portals {
+        var firstPortal: CGPoint?
+        var secondPortal: CGPoint?
+        
+        var firstMoveBy: CGPoint?
+        var secondMoveBy: CGPoint?
+    }
+    
     var mapDelegate: GameDelegate?
     
     private var currentMap: String?
@@ -109,12 +121,25 @@ class GameScene: SKScene, LoadMapDelegate {
                     loadFinishPoint(withPosition: position)
                 case "i":
                     loadPlayer(withPosition: position)
+                case "p":
+                    if portals?.firstPortal == nil {
+                        portals?.firstMoveBy = position
+                        portals?.firstPortal = position
+                    } else {
+                        portals?.secondMoveBy = position
+                        portals?.secondPortal = position
+                    }
                 case " ":
                     break
                 default:
                     fatalError("Unknown symbol")
                 }
             }
+        }
+        
+        if let firstPotion = portals?.firstPortal, let secondPosition = portals?.secondPortal {
+            load(firstPortal: true, withPosition: firstPotion)
+            load(firstPortal: false, withPosition: secondPosition)
         }
     }
     
@@ -187,6 +212,53 @@ class GameScene: SKScene, LoadMapDelegate {
         addChild(node)
     }
     
+    func load(firstPortal first: Bool, withPosition position: CGPoint) {
+        let node = first ? SKSpriteNode(imageNamed: "portal") : SKSpriteNode(imageNamed: "portal2")
+        node.position = position
+        
+        node.size = CGSize(width: cellWidth, height: cellWidth)
+        node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 3)
+        node.physicsBody?.categoryBitMask = CollisionTypes.portal.rawValue
+        node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+        node.physicsBody?.collisionBitMask = 0
+        node.physicsBody?.isDynamic = false
+        addChild(node)
+        
+//        print("\n\nLoad \(first ? 1 : 2) portal")
+        node.name = "portal\(first ? 1 : 2)"
+             
+            
+        if self.atPoint(position + CGPoint(x: cellWidth - 2, y: 2)).name == nil {
+//            print("Left")
+            if first {
+                portals?.firstMoveBy = position + CGPoint(x: cellWidth, y: 0)
+            } else {
+                portals?.secondMoveBy = position + CGPoint(x: cellWidth, y: 0)
+            }
+        } else if self.atPoint(position + CGPoint(x: 2, y: cellWidth - 2)).name == nil {
+//            print("Bottom")
+            if first {
+                portals?.firstMoveBy = position + CGPoint(x: 0, y: cellWidth)
+            } else {
+                portals?.secondMoveBy = position + CGPoint(x: 0, y: cellWidth)
+            }
+        } else if self.atPoint(position + CGPoint(x: 2, y: -cellWidth + 2)).name == nil {
+//            print("Up")
+            if first {
+                portals?.firstMoveBy = position + CGPoint(x: 0, y: -cellWidth)
+            } else {
+                portals?.secondMoveBy = position + CGPoint(x: 0, y: -cellWidth)
+            }
+        } else if self.atPoint(position + CGPoint(x: -cellWidth + 2, y: 2)).name == nil {
+//            print("Right")
+            if first {
+                portals?.firstMoveBy = position + CGPoint(x: -cellWidth, y: 0)
+            } else {
+                portals?.secondMoveBy = position + CGPoint(x: -cellWidth, y: 0)
+            }
+        }
+    }
+    
     func loadPlayer(withPosition position: CGPoint) {
         self.playerPosition = position
         
@@ -205,8 +277,9 @@ class GameScene: SKScene, LoadMapDelegate {
         playerNode.physicsBody?.categoryBitMask = CollisionTypes.player.rawValue
         playerNode.physicsBody?.collisionBitMask = CollisionTypes.wall.rawValue
         playerNode.physicsBody?.contactTestBitMask = CollisionTypes.finish.rawValue |
-                                               CollisionTypes.star.rawValue |
-                                               CollisionTypes.vortex.rawValue
+                                                     CollisionTypes.star.rawValue |
+                                                     CollisionTypes.vortex.rawValue |
+                                                     CollisionTypes.portal.rawValue
         playerNode.physicsBody?.isDynamic = true
         
         loadLightNode()
@@ -300,12 +373,12 @@ class GameScene: SKScene, LoadMapDelegate {
         physicsWorld.gravity = CGVector(dx: accelerometerData.acceleration.y * 50,
                                         dy: accelerometerData.acceleration.x * -50)
         
-        guard let playerNode = playerNode else {
-            return
-        }
+//        guard let playerNode = playerNode else {
+//            return
+//        }
         
         
-        lightNode.position = playerNode.position
+//        lightNode.position = playerNode.position
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -374,6 +447,62 @@ class GameScene: SKScene, LoadMapDelegate {
                     self.gameState = .pause
                 }
             }
+        case "portal1":
+            guard let secondPortal = portals?.secondPortal else { return }
+            guard let firstPortal = portals?.firstPortal else { return }
+            guard let secondMoveBy = portals?.secondMoveBy else { return }
+
+            playerNode.physicsBody?.isDynamic = false
+            
+            playerNode.physicsBody?.contactTestBitMask = 0
+            
+            let move1 = SKAction.move(to: firstPortal, duration: 0.25)
+            let scale1 = SKAction.scale(by : 0.001, duration: 0.25)
+            
+            let move2 = SKAction.move(to: secondPortal, duration: 0)
+            
+            let move3 = SKAction.move(to: secondMoveBy, duration: 0.25)
+            let scale2 = SKAction.scale(by : 1 / 0.001, duration: 0.25)
+            
+            let group = SKAction.group([move3, scale2])
+            
+            let sequnce = SKAction.sequence([move1, scale1, move2, group])
+            
+            playerNode.run(sequnce) {
+                self.playerNode.physicsBody?.isDynamic = true
+                self.playerNode.physicsBody?.contactTestBitMask = CollisionTypes.finish.rawValue |
+                CollisionTypes.star.rawValue |
+                CollisionTypes.vortex.rawValue |
+                CollisionTypes.portal.rawValue
+            }
+            
+        case "portal2":
+            guard let secondPortal = portals?.secondPortal else { return }
+            guard let firstPortal = portals?.firstPortal else { return }
+            guard let firstMoveBy = portals?.firstMoveBy else { return }
+                        
+            playerNode.physicsBody?.isDynamic = false
+            playerNode.physicsBody?.contactTestBitMask = 0
+            
+            let move1 = SKAction.move(to: secondPortal, duration: 0.25)
+            let scale1 = SKAction.scale(by : 0.001, duration: 0.25)
+            
+            let move2 = SKAction.move(to: firstPortal, duration: 0)
+            let move3 = SKAction.move(to: firstMoveBy, duration: 0.25)
+            let scale2 = SKAction.scale(by : 1 / 0.001, duration: 0.25)
+            
+            let group = SKAction.group([move3, scale2])
+            
+            let sequnce = SKAction.sequence([move1, scale1, move2, group])
+            
+            playerNode.run(sequnce) {
+                self.playerNode.physicsBody?.isDynamic = true
+                self.playerNode.physicsBody?.contactTestBitMask = CollisionTypes.finish.rawValue |
+                CollisionTypes.star.rawValue |
+                CollisionTypes.vortex.rawValue |
+                CollisionTypes.portal.rawValue
+            }
+                        
         default:
             break
         }
@@ -401,7 +530,7 @@ class GameScene: SKScene, LoadMapDelegate {
     
     func removeAllGameNode() {
         self.children.forEach({ (node) in
-            if ["star", "block", "player", "vortex", "finish"].contains(node.name) {
+            if ["star", "block", "player", "vortex", "finish", "portal1", "portal2", "ball"].contains(node.name) {
                 node.removeFromParent()
             }
         })
@@ -589,4 +718,14 @@ extension GameScene:  SKPhysicsContactDelegate {
                 mapDelegate?.downloadMainMenu()
             }
         }
+}
+
+extension CGPoint {
+    static func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+        return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+    }
+    
+    static func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+        return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+    }
 }
