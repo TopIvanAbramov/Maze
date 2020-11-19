@@ -70,22 +70,28 @@ class SettingsScene: SKScene {
     }
     
     func loadBallColorsLabels() {
+        let node = SKLabelNode(fontNamed: "Chalkduster")
+        node.position = CGPoint(x: frame.maxX / 2, y: frame.maxY / 2 + 120 )
+        node.text = "Ball color"
+        node.fontColor = #colorLiteral(red: 0.8980392157, green: 0.6666666667, blue: 0.09019607843, alpha: 1)
+        addChild(node)
+        
         let node1 = SKSpriteNode(imageNamed: "playerGreen")
-        node1.position = CGPoint(x: frame.maxX / 2 - 90, y: frame.maxY / 2 + 50 )
+        node1.position = CGPoint(x: frame.maxX / 2 - 90, y: frame.maxY / 2 + 60 )
         addChild(node1)
         node1.size = CGSize(width: 60, height: 60)
         node1.name = "playerGreen"
         ballColors.append(node1)
         
         let node2 = SKSpriteNode(imageNamed: "playerBlue")
-        node2.position = CGPoint(x: frame.maxX / 2, y: frame.maxY / 2 + 50)
+        node2.position = CGPoint(x: frame.maxX / 2, y: frame.maxY / 2 + 60)
         addChild(node2)
         node2.size = CGSize(width: 60, height: 60)
         node2.name = "playerBlue"
         ballColors.append(node2)
         
         let node3 = SKSpriteNode(imageNamed: "playerPink")
-        node3.position = CGPoint(x: frame.maxX / 2 + 90, y: frame.maxY / 2 + 50)
+        node3.position = CGPoint(x: frame.maxX / 2 + 90, y: frame.maxY / 2 + 60)
         addChild(node3)
         node3.size = CGSize(width: 60, height: 60)
         node3.name = "playerPink"
@@ -104,24 +110,30 @@ class SettingsScene: SKScene {
     }
     
     func loadComplexityLevelLabels() {
+        let node = SKLabelNode(fontNamed: "Chalkduster")
+        node.position = CGPoint(x: frame.maxX / 2, y: frame.maxY / 3 + 10 )
+        node.text = "Difficulty level"
+        node.fontColor = #colorLiteral(red: 0.8980392157, green: 0.6666666667, blue: 0.09019607843, alpha: 1)
+        addChild(node)
+        
         let node1 = SKSpriteNode(imageNamed: "easy")
-        node1.position = CGPoint(x: frame.maxX / 2 - 90, y: frame.maxY / 3 )
+        node1.position = CGPoint(x: frame.maxX / 2 - 90, y: frame.maxY / 3 - 50)
         addChild(node1)
-        node1.size = CGSize(width: 60, height: 60)
+        node1.size = CGSize(width: 60, height: 34)
         node1.name = "easy"
         complexityLevels.append(node1)
         
         let node2 = SKSpriteNode(imageNamed: "medium")
-        node2.position = CGPoint(x: frame.maxX / 2, y: frame.maxY / 3)
+        node2.position = CGPoint(x: frame.maxX / 2, y: frame.maxY / 3 - 50)
         addChild(node2)
-        node2.size = CGSize(width: 60, height: 60)
+        node2.size = CGSize(width: 60, height: 34)
         node2.name = "medium"
         complexityLevels.append(node2)
         
         let node3 = SKSpriteNode(imageNamed: "hard")
-        node3.position = CGPoint(x: frame.maxX / 2 + 90, y: frame.maxY / 3)
+        node3.position = CGPoint(x: frame.maxX / 2 + 90, y: frame.maxY / 3 - 50)
         addChild(node3)
-        node3.size = CGSize(width: 60, height: 60)
+        node3.size = CGSize(width: 60, height: 34)
         node3.name = "hard"
         complexityLevels.append(node3)
     }
@@ -143,7 +155,6 @@ class SettingsScene: SKScene {
 
         complexityLevels.forEach { (node) in
             if node.name == complexityLevel {
-                print("Select level")
                 selectedLevel = SKSpriteNode(imageNamed: "circle")
                 selectedLevel?.size = CGSize(width: 85, height: 85)
                 selectedLevel?.position = node.position

@@ -32,14 +32,12 @@ class GameViewController: UIViewController {
             
             self.socketConnector.requestMap(withWidth: height, andHeight: width, vortexProb: vortexProb)
         } else {
-
+            socketConnector.connect {}
         }
     }
     
     
     func generated(map: String) {
-//        print("Map \(map) X: \(x) Y: \(y)")
-        
         loadLevelDelegate?.generated(map: map)
     }
     
@@ -52,9 +50,7 @@ class GameViewController: UIViewController {
         
         socketConnector.delegate = self
         
-        socketConnector.connect {
-           
-        }
+        socketConnector.connect {}
         
 //        GameScene
         
@@ -171,8 +167,6 @@ extension GameViewController: SettingsSceneDelegate, GameDelegate, MainMenuDeleg
     
     func downloadMainMenu() {
         loadMainMenu()
-        
-        print("Main menu")
     }
     
     

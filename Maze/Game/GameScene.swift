@@ -257,6 +257,7 @@ class GameScene: SKScene, LoadMapDelegate {
                 portals?.secondMoveBy = position + CGPoint(x: -cellWidth, y: 0)
             }
         }
+
     }
     
     func loadPlayer(withPosition position: CGPoint) {
